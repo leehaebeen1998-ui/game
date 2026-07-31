@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>회피권 — Dodge Fist</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 5%,#183c4a,transparent 35%),radial-gradient(circle at 85% 100%,#451d42,transparent 38%),#090d17;color:#f7f7fb;font-family:system-ui,"Noto Sans KR",sans-serif}.app{width:min(1060px,100%)}header{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.tag{margin:0 0 5px;color:#4ff0c4;font-size:12px;font-weight:900;letter-spacing:.22em}h1{margin:0;font-size:clamp(34px,7vw,68px);line-height:.9;letter-spacing:-.06em}h1 span{color:#95a3bb;font-weight:300}.best{text-align:right;color:#95a3bb;font-size:12px}.best b{display:block;color:#ffdf73;font-size:25px}.stage{position:relative;overflow:hidden;border:1px solid #ffffff20;border-radius:20px;background:#111827;box-shadow:0 32px 80px #0008}canvas{display:block;width:100%;height:auto}.cover{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:20px;background:#07101ddd;backdrop-filter:blur(5px)}.cover[hidden]{display:none}.cover p{margin:0 0 7px;color:#4ff0c4;font-weight:900}.cover h2{margin:0 0 22px;font-size:clamp(25px,5vw,48px)}button{border:0;font:inherit;cursor:pointer;touch-action:none}.start{justify-self:center;padding:14px 28px;border-radius:999px;background:#ffdf73;color:#18140a;font-weight:950}.cover small{margin-top:12px;color:#8592a8}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.controls button{min-height:65px;border:1px solid #ffffff20;border-radius:14px;background:#151d2c;color:white;font-size:21px;font-weight:950}.controls button:active{transform:translateY(2px)}.controls small{display:block;margin-top:3px;color:#9aa7ba;font-size:10px}.controls .atk{background:#e43d61}.controls .dodge{background:#118f7a}footer{display:flex;justify-content:space-between;padding:13px 4px;color:#77849a;font-size:12px}@media(max-width:650px){body{padding:12px}.best{display:none}h1 span{display:block;margin-top:7px;font-size:.5em}.stage{border-radius:13px}.controls{grid-template-columns:repeat(2,1fr)}footer{display:block;line-height:1.7}footer span{display:block}}
+</style>
+</head>
+<body><main class="app">
+<header><div><p class="tag">LOW-SPEC ARCADE</p><h1>회피권 <span>DODGE FIST</span></h1></div><div class="best">최고 점수<b id="best">0</b></div></header>
+<div class="stage"><canvas id="game" width="960" height="540"></canvas><div class="cover" id="cover"><p id="message">격투와 피하기, 한 판에.</p><h2 id="title">주먹은 가까이, 몸은 빠르게</h2><button class="start" id="start">게임 시작</button><small>Enter 키로도 시작할 수 있어요</small></div></div>
+<div class="controls">
+<button data-key="left">←<small>A / ← 이동</small></button><button data-key="right">→<small>D / → 이동</small></button>
+<button class="atk" data-key="attack">주먹<small>J / Space</small></button><button class="dodge" data-key="dodge">회피<small>K / Shift</small></button>
+</div><footer>← → / A D 이동 · J / Space 공격 · K / Shift 회피 <span>장애물은 시간이 갈수록 빨라집니다.</span></footer>
+</main>
+<script>
+const C=document.querySelector("#game"),X=C.getContext("2d"),W=960,H=540,keys=new Set();
+const cover=document.querySelector("#cover"),msg=document.querySelector("#message"),title=document.querySelector("#title"),bestEl=document.querySelector("#best");
+let best=+(localStorage.dodgeFistBest||0),s;bestEl.textContent=best.toLocaleString();
+function reset(){s={p:{x:140,y:420,w:38,h:62,hp:100,atk:0,inv:0},e:{x:770,y:410,w:48,h:72,hp:100,hit:0},rocks:[],score:0,time:0,spawn:0,playing:true};cover.hidden=true}
+function press(k,on){on?keys.add(k):keys.delete(k);if(!s)return;if(on&&k==="attack")s.p.atk=12;if(on&&k==="dodge"&&s.p.inv<=0){s.p.inv=28;s.p.x+=s.p.x<s.e.x?-55:55}}
+document.querySelector("#start").onclick=reset;
+const map={ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"," ":"attack",j:"attack",J:"attack",Shift:"dodge",k:"dodge",K:"dodge"};
+addEventListener("keydown",e=>{if(e.key==="Enter"&&(!s||!s.playing))reset();if(map[e.key]){e.preventDefault();press(map[e.key],true)}});addEventListener("keyup",e=>map[e.key]&&press(map[e.key],false));
+document.querySelectorAll("[data-key]").forEach(b=>{const k=b.dataset.key;b.onpointerdown=e=>{e.preventDefault();press(k,true)};b.onpointerup=b.onpointercancel=b.onpointerleave=()=>press(k,false)});
+const hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+function end(win){s.playing=false;best=Math.max(best,Math.floor(s.score));localStorage.dodgeFistBest=best;bestEl.textContent=best.toLocaleString();msg.textContent=win?"승리!":"아쉽지만 패배";title.textContent=Math.floor(s.score).toLocaleString()+"점";document.querySelector("#start").textContent="다시 도전";cover.hidden=false}
+function update(dt){if(!s||!s.playing)return;let p=s.p,e=s.e;s.time+=dt;s.spawn-=dt;
+if(keys.has("left"))p.x-=5.3*dt;if(keys.has("right"))p.x+=5.3*dt;p.x=Math.max(22,Math.min(W-p.w-22,p.x));p.atk=Math.max(0,p.atk-dt);p.inv=Math.max(0,p.inv-dt);e.hit=Math.max(0,e.hit-dt);
+e.x+=Math.sign(p.x-e.x)*Math.min(2.1+s.time/900,Math.abs(p.x-e.x))*dt;
+if(p.atk>6&&hit({x:p.x+(p.x<e.x?p.w:-42),y:p.y+16,w:42,h:24},e)&&e.hit<=0){e.hp=Math.max(0,e.hp-10);e.hit=16;s.score+=120}
+if(s.spawn<=0){let side=Math.random()<.5,speed=4.2+Math.min(5,s.time/400);s.rocks.push({x:side?-30:W+30,y:250+Math.random()*190,vx:side?speed:-speed,r:12+Math.random()*13});s.spawn=Math.max(24,68-s.time/35)}
+s.rocks.forEach(r=>r.x+=r.vx*dt);s.rocks=s.rocks.filter(r=>{if(hit({x:r.x-r.r,y:r.y-r.r,w:r.r*2,h:r.r*2},p)){if(p.inv<=0){p.hp=Math.max(0,p.hp-12);p.inv=42}return false}return r.x>-80&&r.x<W+80});
+if(Math.abs(p.x-e.x)<55&&p.inv<=0&&Math.floor(s.time)%75<2){p.hp=Math.max(0,p.hp-8);p.inv=34}s.score+=dt*1.4;if(p.hp<=0||e.hp<=0)end(e.hp<=0)}
+function draw(){let g=X.createLinearGradient(0,0,0,H);g.addColorStop(0,"#101a2b");g.addColorStop(1,"#27182d");X.fillStyle=g;X.fillRect(0,0,W,H);X.fillStyle="#ffffff0c";for(let x=0;x<W;x+=48)for(let y=0;y<H;y+=48)X.fillRect(x,y,2,2);X.fillStyle="#40283f";X.fillRect(0,482,W,58);X.fillStyle="#68405c";X.fillRect(0,482,W,4);if(!s)return;
+let p=s.p,e=s.e;X.save();if(p.inv>0&&Math.floor(p.inv/3)%2===0)X.globalAlpha=.35;X.fillStyle="#4ff0c4";X.fillRect(p.x,p.y,p.w,p.h);X.fillStyle="#0b1720";X.fillRect(p.x+8,p.y+14,6,6);X.fillRect(p.x+25,p.y+14,6,6);if(p.atk>0){X.fillStyle="#ffdf73";X.fillRect(p.x+(p.x<e.x?p.w:-42),p.y+18,42,18)}X.restore();
+X.fillStyle=e.hit>0?"#fff":"#ff5577";X.fillRect(e.x,e.y,e.w,e.h);X.fillStyle="#2a0b17";X.fillRect(e.x+9,e.y+17,7,7);X.fillRect(e.x+31,e.y+17,7,7);
+s.rocks.forEach(r=>{X.beginPath();X.fillStyle="#ffb84d";X.arc(r.x,r.y,r.r,0,Math.PI*2);X.fill();X.strokeStyle="#fff2";X.lineWidth=4;X.stroke()});
+X.fillStyle="#fff";X.font="700 19px system-ui";X.fillText("SCORE "+Math.floor(s.score),24,34);X.fillStyle="#ffffff22";X.fillRect(24,50,300,16);X.fillRect(W-324,50,300,16);X.fillStyle="#4ff0c4";X.fillRect(24,50,300*p.hp/100,16);X.fillStyle="#ff5577";X.fillRect(W-324,50,300*e.hp/100,16);X.font="700 13px system-ui";X.fillStyle="#dce8ff";X.fillText("PLAYER",24,82);X.textAlign="right";X.fillText("RIVAL",W-24,82);X.textAlign="left"}
+let last=performance.now();function loop(now){let dt=Math.min(2,(now-last)/16.67);last=now;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+</script></body></html>
