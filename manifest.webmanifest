@@ -1,0 +1,25 @@
+{
+  "name": "몰겜 ARCADE",
+  "short_name": "몰겜",
+  "description": "회피권과 무한 랜덤 미로를 즐기는 저사양 게임 모음",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080c15",
+  "theme_color": "#080c15",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "https://leehaebeen1998-ui.github.io/game/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://leehaebeen1998-ui.github.io/game/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
