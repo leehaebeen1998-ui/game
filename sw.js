@@ -1,4 +1,4 @@
-const CACHE="mogeom-arcade-v6";
+const CACHE="mogeom-arcade-v7";
 const CORE=["./","./index.html","./manifest.webmanifest"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
