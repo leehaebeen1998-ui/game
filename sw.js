@@ -1,18 +1,14 @@
-const CACHE="mogeom-arcade-v12";
-const CORE=["./","./index.html","./app.js?v=12","./manifest.webmanifest"];
 self.addEventListener("install",event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)));
   self.skipWaiting();
 });
+
 self.addEventListener("activate",event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));
-  self.clients.claim();
+  event.waitUntil(self.clients.claim());
 });
+
+// GitHub Pages is the source of truth. Always request the current deployed file
+// instead of keeping an older HTML/JavaScript pair in an offline cache.
 self.addEventListener("fetch",event=>{
-  if(event.request.method!=="GET")return;
-  event.respondWith(fetch(event.request).then(response=>{
-    const copy=response.clone();
-    caches.open(CACHE).then(cache=>cache.put(event.request,copy));
-    return response;
-  }).catch(()=>caches.match(event.request).then(hit=>hit||caches.match("./index.html"))));
+  if(event.request.method==="GET")event.respondWith(fetch(event.request));
 });
+
