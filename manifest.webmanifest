@@ -1,12 +1,12 @@
 {
-  "name": "몰겜 ARCADE",
-  "short_name": "몰겜",
-  "description": "회피권과 무한 랜덤 미로를 즐기는 저사양 게임 모음",
+  "name": "업무 현황 사이트_MGAM",
+  "short_name": "업무 현황_MGAM",
+  "description": "업무 현황 및 간편 도구",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#080c15",
-  "theme_color": "#080c15",
+  "background_color": "#ffffff",
+  "theme_color": "#217346",
   "orientation": "any",
   "icons": [
     {
