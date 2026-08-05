@@ -1,5 +1,5 @@
 const $=s=>document.querySelector(s),keys=new Set(),params=new URLSearchParams(location.search),popupMode=params.get("popup")==="1";let active="menu",miniGame=params.get("game")||"maze",installPrompt=null;
-if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+// The versioned script URL in index.html prevents an older game build from being reused.
 addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e});
 function openGame(id){active=id;$("#menu").style.display="none";document.querySelectorAll(".play").forEach(x=>x.style.display=x.id===id?"block":"none");document.querySelectorAll(".home").forEach(x=>x.style.display="block");}
 document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openGame(b.dataset.open));document.querySelectorAll(".home").forEach(b=>b.onclick=()=>{active="menu";$("#menu").style.display="block";document.querySelectorAll(".play").forEach(x=>x.style.display="none")});
