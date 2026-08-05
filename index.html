@@ -32,6 +32,7 @@ html,body{background:#eef1ef;background-image:none;font-family:"Segoe UI",Arial,
 .play{position:relative;padding:28px 8px 22px 34px;border:1px solid #aeb9b1;background:white}.play:before{content:"1  2  3  4  5  6  7  8  9";writing-mode:vertical-rl;position:absolute;left:0;top:0;width:26px;height:100%;padding-top:32px;background:#f2f4f3;border-right:1px solid #cbd3cd;color:#6e7972;text-align:center;font:10px/34px Arial}.play:after{content:"A　　 B　　 C　　 D　　 E　　 F　　 G";position:absolute;left:27px;right:0;top:0;height:24px;padding:6px;background:#f2f4f3;border-bottom:1px solid #cbd3cd;color:#6e7972;text-align:center;font:10px Arial;overflow:hidden}
 .miniPhoto{display:none}.miniPhoto.on{display:block}.miniPhotoPick{display:block;margin:4px 0;padding:5px;border:1px solid #9bab9f;background:#f4f7f5;text-align:center;font-size:10px;cursor:pointer}.miniPhotoPick input{display:none}.miniPhotoBoards{display:grid;grid-template-columns:1fr 1fr;gap:3px}.miniPhotoBoards canvas{display:block!important;width:100%;height:170px!important;object-fit:contain;border:1px solid #aeb9b1;border-radius:0!important}
 .play:before,.play:after,.workbookGame:before,.workbookGame:after,.mini:before{pointer-events:none}.miniHead,.mini canvas,.miniSudoku,.miniPhoto,.controls,.photoTools{position:relative;z-index:2}
+.onlineTools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px}.onlineTools label{font-size:11px}.onlineTools input,.onlineTools select,.onlineTools button{border:1px solid #9fb0a5;background:#fff;color:#263c2e;padding:6px 8px;font:11px "Segoe UI",Arial,sans-serif}.onlineRank>p{margin:0;padding:0 10px 8px;color:#66736b;font-size:10px}
 @media(max-width:680px){.photoBoards{grid-template-columns:1fr}.sheetStatus{flex-direction:column}.play{padding-left:29px}}
 </style>
 </head>
@@ -47,7 +48,8 @@ html,body{background:#eef1ef;background-image:none;font-family:"Segoe UI",Arial,
       <button class="card" data-open="photo"><span class="num">GAME 04</span><b>로컬 사진</b><h2>검수 비교</h2><p>PC 사진으로 차이점 3개를 만들어 찾습니다.<br>사진은 외부로 전송되지 않습니다.</p></button>
     </div>
     <div class="sheetStatus"><span id="saveStatus">자동 저장 준비됨</span><span>저장 위치: 현재 브라우저</span></div>
-    <div class="rankBox"><h3>최근 성과 TOP 5</h3><table class="rankTable"><thead><tr><th>순위</th><th>항목</th><th>기록</th><th>일시</th></tr></thead><tbody id="rankRows"></tbody></table></div>
+    <div class="rankBox"><h3>내 기록 TOP 5</h3><table class="rankTable"><thead><tr><th>순위</th><th>항목</th><th>기록</th><th>일시</th></tr></thead><tbody id="rankRows"></tbody></table></div>
+    <div class="rankBox onlineRank"><h3>온라인 TOP 10</h3><div class="onlineTools"><label>닉네임 <input id="rankNickname" maxlength="12" placeholder="익명"></label><select id="rankGame"><option value="경로 검토">미로</option><option value="반응 검사">회피권</option><option value="수치 검산">스도쿠</option><option value="이미지 검수">틀린 그림</option></select><button id="rankRefresh" class="ghost">새로고침</button></div><p id="onlineRankMsg">순위 서버 연결 준비 중</p><table class="rankTable"><thead><tr><th>순위</th><th>닉네임</th><th>기록</th><th>일시</th></tr></thead><tbody id="onlineRankRows"><tr><td colspan="4">불러오는 중…</td></tr></tbody></table></div>
   </section>
   <section class="play" id="fight">
     <div class="gamebar"><button class="home">← 게임 선택</button><h2>회피권</h2><div class="stats"><span class="pill" id="fightScore">점수 0</span></div></div>
@@ -71,6 +73,6 @@ html,body{background:#eef1ef;background-image:none;font-family:"Segoe UI",Arial,
 <button class="panic" id="panic">업무 화면 전환 (Esc)</button>
 <aside class="mini" id="mini"><div class="miniHead"><span id="miniTitle">미로 탈출</span><div><button id="miniSwitch">게임 전환</button><button id="miniClose">×</button></div></div><canvas id="miniCanvas" width="360" height="230"></canvas><div class="miniSudoku" id="miniSudoku"></div><div class="miniPhoto" id="miniPhoto"><label class="miniPhotoPick">사진 선택<input id="miniPhotoInput" type="file" accept="image/*"></label><div class="miniPhotoBoards"><canvas id="miniPhotoLeft" width="180" height="170"></canvas><canvas id="miniPhotoRight" width="180" height="170"></canvas></div></div><p class="miniNote">방향키/WASD · PC 화면 우측 아래 독립 창</p></aside>
 <div class="fake" id="fake"><h2>주간 업무 현황</h2><p>프로젝트 진행 내용을 정리한 임시 화면입니다.</p><table><tr><th>항목</th><th>상태</th><th>진행률</th></tr><tr><td>자료 정리</td><td>진행 중</td><td>72%</td></tr><tr><td>보고서 검토</td><td>대기</td><td>45%</td></tr><tr><td>일정 확인</td><td>완료</td><td>100%</td></tr></table><p>Esc 키를 누르면 돌아갑니다.</p></div>
-<script src="./app.js?v=14"></script>
+<script src="./app.js?v=15"></script>
 </body></html>
 
